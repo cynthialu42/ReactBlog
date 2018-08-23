@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchPost } from '../actions';
+import { fetchPost, deletePost } from '../actions';
 import { Link } from 'react-router-dom';
 
 class PostsShow extends Component{
+
     componentDidMount(){
         //get the id from url
         const id = this.props.match.params.id; // provided by react router
         this.props.fetchPost(id)
+    }
+
+    onDeleteClick(){
+
+        const id = this.props.match.params.id;
+        this.props.deletePost(id, ()=> this.props.history.push('/'));
+        
+        
     }
     render(){
         //posts[this.props.match.params.id]; // post we want to show, but posts is the big old list
@@ -23,8 +32,8 @@ class PostsShow extends Component{
                 <Link to ="/">Back To Index</Link>
                 <h3>{post.title}</h3>
                 <h6>Categories: {post.categories}</h6>
-                <p>{post.content}</p> */}
-                
+                <p>{post.content}</p> 
+                <button className = 'btn btn-danger pull-xs-right' onClick = {this.onDeleteClick.bind(this)}>Delete</button>
             </div>
         )
     }
@@ -37,5 +46,5 @@ function mapStateToProps({ posts }, ownProps){ // state.posts. Second argument i
     // to make more reusable and so we aren't passing the entire posts list to the component,
     return { post: posts[ownProps.match.params.id] };
 }
-export default connect(mapStateToProps, { fetchPost })(PostsShow); // connect gives the fetchPost action creator as a prop
+export default connect(mapStateToProps, { fetchPost, deletePost })(PostsShow); // connect gives the fetchPost action creator as a prop
 // for the application to use
